@@ -12,7 +12,7 @@ function AdminDashboard() {
     const [showAddStudent, setShowAddStudent] = useState(false);
     const [showEditStudent, setShowEditStudent] = useState(false);
     const [editingStudent, setEditingStudent] = useState(null);
-    const [invoiceForm, setInvoiceForm] = useState({ studentName: '', amountDue: '' });
+    const [invoiceForm, setInvoiceForm] = useState({ studentId: '', amountDue: '' });
     const [studentForm, setStudentForm] = useState({ 
         firstName: '', 
         lastName: '', 
@@ -47,12 +47,11 @@ function AdminDashboard() {
     const handleCreateInvoice = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/api/invoices', {
-                studentName: invoiceForm.studentName,
+            await api.post(`/api/invoices/${invoiceForm.studentId}`, {
                 amountDue: parseFloat(invoiceForm.amountDue)
             });
             alert('Invoice created successfully!');
-            setInvoiceForm({ studentName: '', amountDue: '' });
+            setInvoiceForm({ studentId: '', amountDue: '' });
             setShowCreateInvoice(false);
             loadData();
         } catch (error) {
@@ -63,13 +62,29 @@ function AdminDashboard() {
     const handleAddStudent = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/api/admin/students', {
+            const response = await api.post('/api/students', {
                 firstName: studentForm.firstName,
                 lastName: studentForm.lastName,
-                admissionNumber: studentForm.admissionNumber,
-                parentEmail: studentForm.parentEmail
+                admissionNumber: studentForm.admissionNumber
             });
-            alert('Student added successfully! When the parent registers with this email, they will be automatically linked.');
+            
+            // Extract student ID from response
+            const studentId = response.data.id;
+            
+            // If parent email is provided, link the student to the parent
+            if (studentForm.parentEmail && studentId) {
+                try {
+                    await api.post(`/api/students/${studentId}/link-parent`, {
+                        parentEmail: studentForm.parentEmail
+                    });
+                    alert('Student added and linked to parent successfully!');
+                } catch (linkError) {
+                    alert('Student added, but linking to parent failed: ' + (linkError.response?.data || 'Parent not found'));
+                }
+            } else {
+                alert('Student added successfully!');
+            }
+            
             setStudentForm({ firstName: '', lastName: '', admissionNumber: '', parentEmail: '' });
             setShowAddStudent(false);
             loadData();
@@ -132,7 +147,7 @@ function AdminDashboard() {
             <div style={styles.header}>
                 <div>
                     <h1 style={styles.title}>Admin Dashboard</h1>
-                    <p style={styles.subtitle}>Welcome back, {user.firstName}!</p>
+                    <p style={styles.subtitle}>Welcome back, {user.firstName} {user.lastName}!</p>
                 </div>
                 <button onClick={logout} style={styles.logoutBtn}>Logout</button>
             </div>
@@ -186,13 +201,13 @@ function AdminDashboard() {
                         <h2 style={styles.modalTitle}>Create New Invoice</h2>
                         <form onSubmit={handleCreateInvoice} style={styles.form}>
                             <div style={styles.inputGroup}>
-                                <label style={styles.label}>Student Name</label>
+                                <label style={styles.label}>Student ID</label>
                                 <input
-                                    type="text"
-                                    value={invoiceForm.studentName}
-                                    onChange={(e) => setInvoiceForm({...invoiceForm, studentName: e.target.value})}
+                                    type="number"
+                                    value={invoiceForm.studentId}
+                                    onChange={(e) => setInvoiceForm({...invoiceForm, studentId: e.target.value})}
                                     style={styles.input}
-                                    placeholder="Enter student name (First Last)"
+                                    placeholder="Enter student ID"
                                     required
                                 />
                             </div>

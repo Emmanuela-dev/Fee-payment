@@ -20,17 +20,21 @@ function ParentDashboard() {
                 getMyChildren(user.userId),
                 getMyInvoices(user.userId)
             ]);
-            setChildren(childrenRes.data);
-            setInvoices(invoicesRes.data);
+            setChildren(Array.isArray(childrenRes.data) ? childrenRes.data : []);
+            setInvoices(Array.isArray(invoicesRes.data) ? invoicesRes.data : []);
         } catch (error) {
             console.error('Error loading data:', error);
+            setChildren([]);
+            setInvoices([]);
         } finally {
             setLoading(false);
         }
     };
 
     const handlePay = (invoice) => {
-        navigate('/payment', { state: { invoice, studentId: invoice.student.id } });
+        if (invoice.student) {
+            navigate('/payment', { state: { invoice, studentId: invoice.student.id } });
+        }
     };
 
     if (loading) {
@@ -52,7 +56,7 @@ function ParentDashboard() {
             <div style={styles.header}>
                 <div>
                     <h1 style={styles.title}>Parent Dashboard</h1>
-                    <p style={styles.subtitle}>Welcome back, {user.firstName}!</p>
+                    <p style={styles.subtitle}>Welcome back, {user.firstName} {user.lastName}!</p>
                 </div>
                 <button onClick={logout} style={styles.logoutBtn}>Logout</button>
             </div>
@@ -100,7 +104,7 @@ function ParentDashboard() {
                     <div style={styles.grid}>
                         {children.map((child) => {
                             const childBalance = invoices
-                                .filter(inv => inv.student.id === child.id)
+                                .filter(inv => inv.student && inv.student.id === child.id)
                                 .reduce((sum, inv) => sum + inv.balance, 0);
                             
                             return (
@@ -146,7 +150,7 @@ function ParentDashboard() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {invoices.map((invoice) => (
+                                {invoices.filter(invoice => invoice.student).map((invoice) => (
                                     <tr key={invoice.id} style={styles.tr}>
                                         <td style={styles.td}>
                                             {invoice.student.firstName} {invoice.student.lastName}

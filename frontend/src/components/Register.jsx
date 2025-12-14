@@ -12,7 +12,6 @@ function Register() {
         phoneNumber: '',
         password: '',
         role: 'PARENT', // Default to parent
-        securityCode: '',
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -31,13 +30,10 @@ function Register() {
         setError('');
         try {
             if (formData.role === 'ADMIN') {
-                // Register as admin with security code
-                const response = await api.post('/api/auth/admin/register', {
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
+                // Register as admin
+                const response = await api.post('/api/auth/admin/create', {
                     email: formData.email,
-                    password: formData.password,
-                    securityCode: formData.securityCode
+                    password: formData.password
                 });
             } else {
                 // Register as parent
@@ -123,12 +119,12 @@ function Register() {
                     </div>
 
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Email</label>
+                        <label style={styles.label}>Email Address</label>
                         <input
                             style={styles.input}
                             type="email"
                             name="email"
-                            placeholder="Enter your email address"
+                            placeholder="Enter your email"
                             value={formData.email}
                             onChange={handleChange}
                             required
@@ -147,22 +143,6 @@ function Register() {
                                 onChange={handleChange}
                                 required={formData.role === 'PARENT'}
                             />
-                        </div>
-                    )}
-
-                    {formData.role === 'ADMIN' && (
-                        <div style={styles.inputGroup}>
-                            <label style={styles.label}>Admin Security Code</label>
-                            <input
-                                style={styles.input}
-                                type="password"
-                                name="securityCode"
-                                placeholder="Enter admin security code"
-                                value={formData.securityCode}
-                                onChange={handleChange}
-                                required={formData.role === 'ADMIN'}
-                            />
-                            <p style={styles.hint}>Contact system administrator for the security code</p>
                         </div>
                     )}
 
