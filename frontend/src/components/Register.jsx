@@ -55,7 +55,7 @@ function Register() {
         } catch (err) {
             console.error('Registration error:', err);
             if (err.code === 'ERR_NETWORK') {
-                setError('Cannot connect to server. Please ensure the backend is running on port 9090.');
+                setError('Cannot connect to server. Please ensure the backend is running on port 8080.');
             } else if (err.response?.data) {
                 // Handle string response or object with message
                 const errorMsg = typeof err.response.data === 'string' 
@@ -121,7 +121,21 @@ function Register() {
                             />
                         </div>
                     </div>
-{formData.role === 'PARENT' && (
+
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Email</label>
+                        <input
+                            style={styles.input}
+                            type="email"
+                            name="email"
+                            placeholder="Enter your email address"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    {formData.role === 'PARENT' && (
                         <div style={styles.inputGroup}>
                             <label style={styles.label}>Phone Number</label>
                             <input
