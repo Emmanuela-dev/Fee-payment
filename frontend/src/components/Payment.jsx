@@ -56,6 +56,25 @@ function Payment() {
         setError('');
 
         try {
+            // ========== TEST MODE: Simulate payment without actual money ==========
+            // Uncomment the Paystack integration below when ready to accept real payments
+            
+            const testReference = `TEST-PAY-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            
+            // Record payment in backend
+            await makePayment({
+                studentId,
+                invoiceId: invoice.id,
+                amountPaid: paymentAmount,
+                paystackReference: testReference
+            });
+            
+            alert(`Payment successful! \nAmount: KES ${paymentAmount.toLocaleString()} \nReference: ${testReference}`);
+            navigate('/dashboard');
+            
+            // ========== PAYSTACK INTEGRATION (COMMENTED FOR TESTING) ==========
+            // Uncomment this section to enable real Paystack payments
+            /*
             if (!window.PaystackPop) {
                 throw new Error('Paystack library not loaded');
             }
@@ -111,9 +130,11 @@ function Payment() {
                 }
             });
             handler.openIframe();
+            */
         } catch (err) {
             console.error('Payment error:', err);
-            setError('Payment initialization failed. Please try again.');
+            setError('Payment failed. Please try again.');
+        } finally {
             setLoading(false);
         }
     };

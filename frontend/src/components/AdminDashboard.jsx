@@ -107,7 +107,7 @@ function AdminDashboard() {
     const handleUpdateStudent = async (e) => {
         e.preventDefault();
         try {
-            await api.put(`/api/admin/students/${editingStudent.id}`, editForm);
+            await api.post(`/api/students/${editingStudent.id}`, editForm);
             alert('Student updated successfully!');
             setShowEditStudent(false);
             setEditingStudent(null);
@@ -413,20 +413,28 @@ function AdminDashboard() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {invoices.map(invoice => (
-                                    <tr key={invoice.id} style={styles.tr}>
-                                        <td style={styles.td}>#{invoice.id}</td>
-                                        <td style={styles.td}>
-                                            {invoice.student.firstName} {invoice.student.lastName} ({invoice.student.admissionNumber})
-                                        </td>
-                                        <td style={styles.td}>KES {invoice.amountDue.toLocaleString()}</td>
-                                        <td style={styles.td}>KES {invoice.amountPaid.toLocaleString()}</td>
-                                        <td style={styles.td}>KES {invoice.balance.toLocaleString()}</td>
-                                        <td style={styles.td}>
-                                            <span style={getStatusStyle(invoice.status)}>{invoice.status}</span>
+                                {invoices.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="6" style={{...styles.td, textAlign: 'center', padding: '2rem'}}>
+                                            No invoices found. Create an invoice to get started.
                                         </td>
                                     </tr>
-                                ))}
+                                ) : (
+                                    invoices.filter(invoice => invoice.student).map(invoice => (
+                                        <tr key={invoice.id} style={styles.tr}>
+                                            <td style={styles.td}>#{invoice.id}</td>
+                                            <td style={styles.td}>
+                                                {invoice.student.firstName} {invoice.student.lastName} ({invoice.student.admissionNumber})
+                                            </td>
+                                            <td style={styles.td}>KES {invoice.amountDue.toLocaleString()}</td>
+                                            <td style={styles.td}>KES {invoice.amountPaid.toLocaleString()}</td>
+                                            <td style={styles.td}>KES {invoice.balance.toLocaleString()}</td>
+                                            <td style={styles.td}>
+                                                <span style={getStatusStyle(invoice.status)}>{invoice.status}</span>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
