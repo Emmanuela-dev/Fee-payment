@@ -154,7 +154,7 @@ function AdminDashboard() {
 
             {/* Stats Overview */}
             <div style={styles.statsGrid}>
-                <div style={{background: 'white', borderRadius: '12px', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: 'var(--shadow)', borderLeft: '4px solid #3b82f6'}}>
+                <div style={{background: 'white', borderRadius: '12px', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: 'var(--shadow)', borderLeft: '4px solid #3b82f6', color: 'black'}}>
                     <div style={styles.statIcon}>👨‍🎓</div>
                     <div style={styles.statContent}>
                         <p style={styles.statLabel}>Total Students</p>
@@ -168,14 +168,14 @@ function AdminDashboard() {
                         <h2 style={styles.statValue}>{parents.length}</h2>
                     </div>
                 </div>
-                <div style={{background: 'white', borderRadius: '12px', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: 'var(--shadow)', borderLeft: '4px solid #10b981'}}>
+                <div style={{background: 'white', borderRadius: '12px', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: 'var(--shadow)', borderLeft: '4px solid #10b981', color: 'black'}}>
                     <div style={styles.statIcon}>💰</div>
                     <div style={styles.statContent}>
                         <p style={styles.statLabel}>Total Revenue</p>
                         <h2 style={styles.statValue}>KES {totalRevenue.toLocaleString()}</h2>
                     </div>
                 </div>
-                <div style={{background: 'white', borderRadius: '12px', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: 'var(--shadow)', borderLeft: '4px solid #ef4444'}}>
+                <div style={{background: 'white', borderRadius: '12px', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: 'var(--shadow)', borderLeft: '4px solid #ef4444', color: 'black'}}>
                     <div style={styles.statIcon}>⚠️</div>
                     <div style={styles.statContent}>
                         <p style={styles.statLabel}>Outstanding</p>
@@ -531,13 +531,13 @@ const styles = {
     },
     statLabel: {
         fontSize: '0.875rem',
-        color: 'rgba(255, 255, 255, 0.9)',
+        color: '#64748b',
         marginBottom: '0.25rem',
     },
     statValue: {
         fontSize: '1.75rem',
         fontWeight: '700',
-        color: 'white',
+        color: '#1e293b',
         margin: 0,
     },
     actionBar: {
